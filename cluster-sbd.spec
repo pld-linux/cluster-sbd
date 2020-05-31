@@ -2,26 +2,30 @@
 Summary:	Shared-storage based death
 Summary(pl.UTF-8):	Uśmiercanie węzła poprzez współdzieloną przestrzeń dyskową
 Name:		cluster-sbd
-Version:	1.2.0
+Version:	1.4.1
 Release:	1
 License:	GPL v2+
 Group:		Daemons
 #Source0Download: https://github.com/ClusterLabs/sbd/releases
 Source0:	https://github.com/ClusterLabs/sbd/archive/v%{version}/sbd-%{version}.tar.gz
-# Source0-md5:	59d4aeaa8470ccecfc6af375532a6e05
-Patch0:		sbd-coro.patch
+# Source0-md5:	506253d40490d49a8effc0f563bcd666
 URL:		https://github.com/ClusterLabs/sbd/
 BuildRequires:	autoconf >= 2.63
-BuildRequires:	automake
-BuildRequires:	cluster-glue-libs-devel >= 1.0.9
-BuildRequires:	corosync-devel >= 1.4
+# for serial-tests
+BuildRequires:	automake >= 1:1.13
+BuildRequires:	corosync-devel >= 2.0
 BuildRequires:	glib2-devel >= 2.0
 BuildRequires:	libaio-devel
+BuildRequires:	libqb-devel
+BuildRequires:	libtool
+BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pacemaker-devel >= 1.1.8
 BuildRequires:	perl-tools-pod
 BuildRequires:	pkgconfig
 Requires:	cluster-glue-stonith >= 1.0.9
+Requires:	corosync-libs >= 2.0
+Requires:	pacemaker-libs >= 1.1.8
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -42,14 +46,24 @@ z klastrami wykorzystującymi "starą" wtyczkę corosync, nie kod MCP).
 
 %prep
 %setup -q -n sbd-%{version}
-%patch0 -p1
+
+# see autogen.sh
+echo 'm4_define([TESTS_OPTION], [serial-tests])' > tests-opt.m4
 
 %build
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-%configure
+cd tests
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+cd ..
+%configure \
+	--disable-static
 
 %{__make}
 
@@ -58,6 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libsbdtestbed.*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
