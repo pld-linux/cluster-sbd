@@ -2,13 +2,13 @@
 Summary:	Shared-storage based death
 Summary(pl.UTF-8):	Uśmiercanie węzła poprzez współdzieloną przestrzeń dyskową
 Name:		cluster-sbd
-Version:	1.4.2
+Version:	1.5.2
 Release:	1
 License:	GPL v2+
 Group:		Daemons
 #Source0Download: https://github.com/ClusterLabs/sbd/releases
 Source0:	https://github.com/ClusterLabs/sbd/archive/v%{version}/sbd-%{version}.tar.gz
-# Source0-md5:	035f9b05d11e4dfed44447e6dce56eb9
+# Source0-md5:	640955575257b8865f067c081d450bac
 URL:		https://github.com/ClusterLabs/sbd/
 BuildRequires:	autoconf >= 2.63
 # for serial-tests
@@ -65,19 +65,12 @@ Pakiet programistyczny SBD, zawierający informacje z czasu budowania.
 echo 'm4_define([TESTS_OPTION], [serial-tests])' > tests-opt.m4
 
 %build
-%{__aclocal}
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-cd tests
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-cd ..
-%configure \
-	--disable-static
+%configure
 
 %{__make}
 
