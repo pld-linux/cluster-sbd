@@ -3,7 +3,7 @@ Summary:	Shared-storage based death
 Summary(pl.UTF-8):	Uśmiercanie węzła poprzez współdzieloną przestrzeń dyskową
 Name:		cluster-sbd
 Version:	1.5.2
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Daemons
 #Source0Download: https://github.com/ClusterLabs/sbd/releases
